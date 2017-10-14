@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Client2 {
+    private int procId = 2;
+
     public static void main(String[] args) throws Exception {
         Connection c1 = new Connection("127.0.0.1", 2100);
         Connection c2 = new Connection("127.0.0.1", 2200);
