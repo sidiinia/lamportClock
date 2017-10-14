@@ -39,8 +39,11 @@ public class Connection implements Runnable{
 
         while (running) {
             String s = this.read();
+            if (s == null || s.equals("quit")) {
+                break;
+            }
             if (s != null && (!s.equals(""))) {
-                System.out.println("received messages :" + s);
+                System.out.println("received message:" + s);
             }
         }
         try {
@@ -56,6 +59,8 @@ public class Connection implements Runnable{
         String s = null;
         try {
             s = inStream.readUTF();
+        } catch (EOFException e) {
+
         } catch (IOException e) {
             e.printStackTrace();
         }

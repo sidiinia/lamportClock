@@ -13,6 +13,7 @@ public class CreateServerSocket implements Runnable {
     private int port;
     private boolean running;
     private ServerSocket ss = null;
+    private Map<Integer, List<Socket>> clientMap = new HashMap<>();
 
     public CreateServerSocket(int port) {
         this.port = port;
