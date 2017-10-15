@@ -3,9 +3,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Client1 {
-    private int clockTime;
-    private int procId = 1;
-    private int numOfLikes;
+    private static int clockTime = 0;
+    private static int procId = 1;
+    private static int numOfLikes = 0;
 
     public static void main(String[] args) throws Exception {
 
@@ -16,7 +16,7 @@ public class Client1 {
         c2.start();
 
         // test content
-        System.out.println("TEST CONTENT:");
+        System.out.println("TESTCASE CONTENT:");
 
         String clientMessage = "";
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -28,14 +28,27 @@ public class Client1 {
                 if (!clientMessage.equals("")) {
                     System.out.println("user input is " + clientMessage);
                     if (clientMessage.equals("like")) {
-                        //sendPacket();
+                        increaseClockTime(-1);
+                        Packet packet = new Packet("Sent from Client1", 1, clockTime);
+                        c1.write(packet);
+                        c2.write(packet);
                     }
-                    c1.write(clientMessage);
-                    c2.write(clientMessage);
+                    //c1.write(clientMessage);
+                    //c2.write(clientMessage);
                 }
             }
         } catch (IOException e) {
 
         }
+    }
+
+    synchronized public static void increaseClockTime(int piggybackTime) {
+        clockTime = clockTime > piggybackTime ? clockTime : piggybackTime;
+        clockTime++;
+        System.out.println("Current clock value for Client 1 is " + clockTime);
+    }
+
+    synchronized public static void increaseLikes() {
+        numOfLikes++;
     }
 }

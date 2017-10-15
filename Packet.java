@@ -1,6 +1,8 @@
-public class Packet {
+import java.io.Serializable;
 
-    private final Object message;
+public class Packet implements Serializable {
+
+    private final String message;
 
     private final int processId;
 
@@ -9,13 +11,13 @@ public class Packet {
      */
     private final int time;
 
-    public Packet(Object message, int processId, int time) {
+    public Packet(String message, int processId, int time) {
         this.message = message;
         this.processId = processId;
         this.time = time;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return message;
     }
 

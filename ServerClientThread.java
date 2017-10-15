@@ -1,5 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
@@ -7,7 +9,7 @@ class ServerClientThread extends Thread {
     Socket socket;
     List<Socket> clientList;
     boolean running = true;
-    String mes;
+    Packet packet;
     //int clientNo;
     ServerClientThread(Socket socket, List<Socket> clientList){
         this.socket = socket;
@@ -15,16 +17,16 @@ class ServerClientThread extends Thread {
     }
     public void run(){
         try{
+            ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             while (running) {
-                DataInputStream inStream = new DataInputStream(socket.getInputStream());
-                mes = inStream.readUTF();
-                System.out.println("server received mes: " + mes);
+                Packet packet = (Packet) inStream.readObject();
+                System.out.println("server received: " + ((Packet)packet).getMessage());
 
                 for (int i = 0; i < clientList.size(); i++) {
                     if (!clientList.get(i).equals(socket)) {
-                        DataOutputStream outStream = new DataOutputStream(clientList.get(i).getOutputStream());
+                        ObjectOutputStream outStream = new ObjectOutputStream(clientList.get(i).getOutputStream());
                         //System.out.println("server trying to write to socket" + clientList.get(i));
-                        outStream.writeUTF(mes);
+                        outStream.writeObject(packet);
                     }
                 }
             }
