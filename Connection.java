@@ -10,17 +10,18 @@ public class Connection implements Runnable, Serializable {
 
     private String host;
     private int port;
-    private static int clientClock = 0;
+    private static int clientClock;
     //private DataOutputStream outStream;
     //private DataInputStream inStream;
     private ObjectOutputStream outStream;
     private ObjectInputStream inStream;
     private boolean running;
-    private int clientId;
+    private static int clientId;
     private volatile Socket returnSocket;
+    private static int numOfLikes;
     Packet packet = null;
 
-    public Connection(String host, int port, int clientId, int clientClocks) {
+    public Connection(String host, int port, int clientId, int clientClock) {
         this.host = host;
         this.port = port;
         this.clientId = clientId;
@@ -66,28 +67,37 @@ public class Connection implements Runnable, Serializable {
                 int senderClockTime = packet.getTime();
                 clientClock =  clientClock > senderClockTime? clientClock : senderClockTime;
                 clientClock++;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 switch (packet.getProcessId()) {
                     case (1) :
+                        System.out.println("in switch: " + Client2.numOfLikes);
+                        numOfLikes = Client2.increaseLikes(packet);
+                        System.out.println("in switch: " + Client2.numOfLikes);
                         Client2.setClockTime(clientClock);
-                        Client2.increaseLikes(packet);
+                        numOfLikes = Client3.increaseLikes(packet);
                         Client3.setClockTime(clientClock);
-                        Client3.increaseLikes(packet);
                         break;
                     case (2) :
+                        numOfLikes = Client1.increaseLikes(packet);
                         Client1.setClockTime(clientClock);
-                        Client1.increaseLikes(packet);
+                        numOfLikes = Client3.increaseLikes(packet);
                         Client3.setClockTime(clientClock);
-                        Client3.increaseLikes(packet);
                         break;
                     case (3) :
+                        numOfLikes = Client1.increaseLikes(packet);
                         Client1.setClockTime(clientClock);
-                        Client1.increaseLikes(packet);
+                        numOfLikes = Client2.increaseLikes(packet);
                         Client2.setClockTime(clientClock);
-                        Client2.increaseLikes(packet);
                         break;
                     default:
                         break;
                 }
+                System.out.println("CLIENT " + clientId + " current clock is " + clientClock);
+                System.out.println("CLIENT " + clientId + " num of likes is " + numOfLikes);
                 packet = null;
                 //System.out.println("Current clock value for Client "+ clientId + " is " + clientClock);
             }

@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 public class Client2 {
     private static int clockTime = 0;
     private static int procId = 2;
-    private static int numOfLikes = 0;
+    public static int numOfLikes = 0;
 
     public static void main(String[] args) throws Exception {
 
@@ -32,17 +32,15 @@ public class Client2 {
                 if (!clientMessage.equals("")) {
                     System.out.println("user input is " + clientMessage);
                     if (clientMessage.equals("like")) {
-                        Thread.sleep(5000);
+                        //Thread.sleep(5000);
                         increaseClockTime(-1);
+                        //System.out.println("CLIENT 2: "+ clockTime);
                         numOfLikes++;
                         System.out.println("Client 2 has " + numOfLikes + " likes");
                         Packet packet = new Packet("Sent from Client 2", procId, clockTime, numOfLikes);
                         c1.write(packet);
                         c2.write(packet);
-                        //sendPacket();
                     }
-                    //c1.write(clientMessage);
-                    //c2.write(clientMessage);
                 }
             }
         } catch (IOException e) {
@@ -56,19 +54,27 @@ public class Client2 {
         System.out.println("Current clock value for Client 2 is " + clockTime);
     }
 
-    public static void increaseLikes(Packet p) {
+    public static int increaseLikes(Packet p) {
+        System.out.println("received packet with time " + p.getTime());
+        System.out.println("Own clock time " + clockTime);
         if (p.getTime() < clockTime) {
             numOfLikes = p.getNumOfLikes();
         } else if (p.getTime() == clockTime && p.getProcessId() < procId){
-            numOfLikes = p.getNumOfLikes();
+            if (numOfLikes >= p.getNumOfLikes()) {
+                numOfLikes++;
+            } else {
+                numOfLikes = p.getNumOfLikes();
+            }
         } else {
             numOfLikes++;
         }
-        System.out.println("Client 2 has " + numOfLikes + " likes");
+        //System.out.println("Clientttttttt 2 has " + numOfLikes + " likes");
+
+        return numOfLikes;
     }
 
     public static void setClockTime(int clockTime) {
         Client2.clockTime = clockTime;
-        System.out.println("Current clock value for Client 2 is " + clockTime);
+        //System.out.println("Current clock value for Client 2 is " + clockTime);
     }
 }

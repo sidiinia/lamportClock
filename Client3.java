@@ -27,8 +27,9 @@ public class Client3 {
                 if (!clientMessage.equals("")) {
                     System.out.println("user input is " + clientMessage);
                     if (clientMessage.equals("like")) {
-                        Thread.sleep(5000);
+                        //Thread.sleep(5000);
                         increaseClockTime(-1);
+                        //System.out.println("CLIENT 3: "+ clockTime);
                         numOfLikes++;
                         System.out.println("Client 3 has " + numOfLikes + " likes");
                         Packet packet = new Packet("Sent from Client 3", procId, clockTime, numOfLikes);
@@ -52,19 +53,26 @@ public class Client3 {
         System.out.println("Current clock value for Client 3 is " + clockTime);
     }
 
-    public static void increaseLikes(Packet p) {
+    public static int increaseLikes(Packet p) {
+        System.out.println("received packet with time " + p.getTime());
+        System.out.println("Own clock time " + clockTime);
         if (p.getTime() < clockTime) {
             numOfLikes = p.getNumOfLikes();
         } else if (p.getTime() == clockTime && p.getProcessId() < procId){
-            numOfLikes = p.getNumOfLikes();
+            if (numOfLikes >= p.getNumOfLikes()) {
+                numOfLikes++;
+            } else {
+                numOfLikes = p.getNumOfLikes();
+            }
         } else {
             numOfLikes++;
         }
-        System.out.println("Client 3 has " + numOfLikes + " likes");
+        return numOfLikes;
+        //System.out.println("Client 3 has " + numOfLikes + " likes");
     }
 
     public static void setClockTime(int clockTime) {
         Client3.clockTime = clockTime;
-        System.out.println("Current clock value for Client 3 is " + clockTime);
+        //System.out.println("Current clock value for Client 3 is " + clockTime);
     }
 }
