@@ -32,8 +32,11 @@ public class Client2 {
                 if (!clientMessage.equals("")) {
                     System.out.println("user input is " + clientMessage);
                     if (clientMessage.equals("like")) {
+                        Thread.sleep(5000);
                         increaseClockTime(-1);
-                        Packet packet = new Packet("Sent from Client 2", procId, clockTime);
+                        numOfLikes++;
+                        System.out.println("Client 2 has " + numOfLikes + " likes");
+                        Packet packet = new Packet("Sent from Client 2", procId, clockTime, numOfLikes);
                         c1.write(packet);
                         c2.write(packet);
                         //sendPacket();
@@ -52,6 +55,18 @@ public class Client2 {
         clockTime++;
         System.out.println("Current clock value for Client 2 is " + clockTime);
     }
+
+    public static void increaseLikes(Packet p) {
+        if (p.getTime() < clockTime) {
+            numOfLikes = p.getNumOfLikes();
+        } else if (p.getTime() == clockTime && p.getProcessId() < procId){
+            numOfLikes = p.getNumOfLikes();
+        } else {
+            numOfLikes++;
+        }
+        System.out.println("Client 2 has " + numOfLikes + " likes");
+    }
+
     public static void setClockTime(int clockTime) {
         Client2.clockTime = clockTime;
         System.out.println("Current clock value for Client 2 is " + clockTime);

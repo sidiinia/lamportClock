@@ -2,20 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7e8954cb-25e7-41cb-a5ba-f93af7af7932" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ReadThread.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client1.class" afterPath="$PROJECT_DIR$/Client1.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client2.class" afterPath="$PROJECT_DIR$/Client2.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client3.class" afterPath="$PROJECT_DIR$/Client3.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Connection.class" afterPath="$PROJECT_DIR$/Connection.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RunServers.class" afterPath="$PROJECT_DIR$/RunServers.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ServerClientThread.class" afterPath="$PROJECT_DIR$/ServerClientThread.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Packet.class" afterPath="$PROJECT_DIR$/Packet.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client1.java" afterPath="$PROJECT_DIR$/Client1.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client2.java" afterPath="$PROJECT_DIR$/Client2.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Client3.java" afterPath="$PROJECT_DIR$/Client3.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Connection.java" afterPath="$PROJECT_DIR$/Connection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RunServers.java" afterPath="$PROJECT_DIR$/RunServers.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ServerClientThread.java" afterPath="$PROJECT_DIR$/ServerClientThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Packet.java" afterPath="$PROJECT_DIR$/Packet.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,8 +27,8 @@
       <file leaf-file-name="Client1.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="31" column="41" lean-forward="true" selection-start-line="31" selection-start-column="41" selection-end-line="31" selection-end-column="41" />
+            <state relative-caret-position="435">
+              <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -62,18 +59,18 @@
       <file leaf-file-name="Client2.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Client2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="56" column="6" lean-forward="false" selection-start-line="56" selection-start-column="6" selection-end-line="56" selection-end-column="6" />
+            <state relative-caret-position="119">
+              <caret line="34" column="38" lean-forward="false" selection-start-line="34" selection-start-column="38" selection-end-line="34" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Client3.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Client3.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Client3.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="17" column="44" lean-forward="true" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
+            <state relative-caret-position="91">
+              <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -84,25 +81,27 @@
       <file leaf-file-name="Packet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Packet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="44" lean-forward="false" selection-start-line="2" selection-start-column="44" selection-end-line="2" selection-end-column="44" />
+            <state relative-caret-position="510">
+              <caret line="34" column="29" lean-forward="false" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
               <folding>
-                <element signature="e#427#428#0" expanded="true" />
-                <element signature="e#457#458#0" expanded="true" />
-                <element signature="e#490#491#0" expanded="true" />
-                <element signature="e#522#523#0" expanded="true" />
-                <element signature="e#550#551#0" expanded="true" />
-                <element signature="e#577#578#0" expanded="true" />
+                <element signature="e#510#511#0" expanded="true" />
+                <element signature="e#540#541#0" expanded="true" />
+                <element signature="e#573#574#0" expanded="true" />
+                <element signature="e#605#606#0" expanded="true" />
+                <element signature="e#633#634#0" expanded="true" />
+                <element signature="e#660#661#0" expanded="true" />
+                <element signature="e#694#695#0" expanded="true" />
+                <element signature="e#727#728#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Connection.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Connection.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Connection.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="113" column="11" lean-forward="true" selection-start-line="113" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+            <state relative-caret-position="493">
+              <caret line="85" column="52" lean-forward="false" selection-start-line="85" selection-start-column="52" selection-end-line="85" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -144,6 +143,7 @@
       <find>read</find>
       <find>instream</find>
       <find>close</find>
+      <find>2000</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -157,15 +157,15 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Packet.java" />
         <option value="$PROJECT_DIR$/ServerClientThread.java" />
         <option value="$PROJECT_DIR$/ReadThread.java" />
         <option value="$PROJECT_DIR$/CreateServerSocket.java" />
-        <option value="$PROJECT_DIR$/Client3.java" />
         <option value="$PROJECT_DIR$/RunServers.java" />
-        <option value="$PROJECT_DIR$/Client2.java" />
-        <option value="$PROJECT_DIR$/Client1.java" />
+        <option value="$PROJECT_DIR$/Packet.java" />
         <option value="$PROJECT_DIR$/Connection.java" />
+        <option value="$PROJECT_DIR$/Client1.java" />
+        <option value="$PROJECT_DIR$/Client2.java" />
+        <option value="$PROJECT_DIR$/Client3.java" />
       </list>
     </option>
   </component>
@@ -394,21 +394,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Packet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="44" lean-forward="false" selection-start-line="2" selection-start-column="44" selection-end-line="2" selection-end-column="44" />
-          <folding>
-            <element signature="e#427#428#0" expanded="true" />
-            <element signature="e#457#458#0" expanded="true" />
-            <element signature="e#490#491#0" expanded="true" />
-            <element signature="e#522#523#0" expanded="true" />
-            <element signature="e#550#551#0" expanded="true" />
-            <element signature="e#577#578#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/RunServers.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -417,39 +402,56 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Client2.java">
+    <entry file="file://$PROJECT_DIR$/Packet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="56" column="6" lean-forward="false" selection-start-line="56" selection-start-column="6" selection-end-line="56" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client3.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="17" column="44" lean-forward="true" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
+        <state relative-caret-position="510">
+          <caret line="34" column="29" lean-forward="false" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
           <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Client1.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="31" column="41" lean-forward="true" selection-start-line="31" selection-start-column="41" selection-end-line="31" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#510#511#0" expanded="true" />
+            <element signature="e#540#541#0" expanded="true" />
+            <element signature="e#573#574#0" expanded="true" />
+            <element signature="e#605#606#0" expanded="true" />
+            <element signature="e#633#634#0" expanded="true" />
+            <element signature="e#660#661#0" expanded="true" />
+            <element signature="e#694#695#0" expanded="true" />
+            <element signature="e#727#728#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Connection.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="113" column="11" lean-forward="true" selection-start-line="113" selection-start-column="0" selection-end-line="114" selection-end-column="0" />
+        <state relative-caret-position="493">
+          <caret line="85" column="52" lean-forward="false" selection-start-line="85" selection-start-column="52" selection-end-line="85" selection-end-column="52" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="34" column="38" lean-forward="false" selection-start-line="34" selection-start-column="38" selection-end-line="34" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Client3.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="29" column="38" lean-forward="false" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -69,15 +69,21 @@ public class Connection implements Runnable, Serializable {
                 switch (packet.getProcessId()) {
                     case (1) :
                         Client2.setClockTime(clientClock);
+                        Client2.increaseLikes(packet);
                         Client3.setClockTime(clientClock);
+                        Client3.increaseLikes(packet);
                         break;
                     case (2) :
                         Client1.setClockTime(clientClock);
+                        Client1.increaseLikes(packet);
                         Client3.setClockTime(clientClock);
+                        Client3.increaseLikes(packet);
                         break;
                     case (3) :
                         Client1.setClockTime(clientClock);
+                        Client1.increaseLikes(packet);
                         Client2.setClockTime(clientClock);
+                        Client2.increaseLikes(packet);
                         break;
                     default:
                         break;
