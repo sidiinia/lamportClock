@@ -8,9 +8,9 @@ public class Client3 {
     private static int numOfLikes = 0;
 
     public static void main(String[] args) throws Exception {
-        Connection c1 = new Connection("127.0.0.1", 2000);
-        Connection c2 = new Connection("127.0.0.1", 2200);
 
+        Connection c1 = new Connection("127.0.0.1", 2000, procId, clockTime);
+        Connection c2 = new Connection("127.0.0.1", 4000, procId, clockTime);
         c1.start();
         c2.start();
 
@@ -28,7 +28,7 @@ public class Client3 {
                     System.out.println("user input is " + clientMessage);
                     if (clientMessage.equals("like")) {
                         increaseClockTime(-1);
-                        Packet packet = new Packet("Sent from Client3", 3, clockTime);
+                        Packet packet = new Packet("Sent from Client 3", procId, clockTime);
                         c1.write(packet);
                         c2.write(packet);
                         //sendPacket();
@@ -36,6 +36,7 @@ public class Client3 {
                     //c1.write(clientMessage);
                     //c2.write(clientMessage);
                 }
+
             }
         } catch (IOException e) {
 
@@ -45,6 +46,10 @@ public class Client3 {
     public static void increaseClockTime(int piggybackTime) {
         clockTime = clockTime > piggybackTime ? clockTime : piggybackTime;
         clockTime++;
+        System.out.println("Current clock value for Client 3 is " + clockTime);
+    }
+    public static void setClockTime(int clockTime) {
+        Client3.clockTime = clockTime;
         System.out.println("Current clock value for Client 3 is " + clockTime);
     }
 }

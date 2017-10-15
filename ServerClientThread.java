@@ -10,7 +10,7 @@ class ServerClientThread extends Thread {
     List<Socket> clientList;
     boolean running = true;
     Packet packet;
-    //int clientNo;
+
     ServerClientThread(Socket socket, List<Socket> clientList){
         this.socket = socket;
         this.clientList = clientList;
@@ -19,8 +19,8 @@ class ServerClientThread extends Thread {
         try{
             ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
             while (running) {
-                Packet packet = (Packet) inStream.readObject();
-                System.out.println("server received: " + ((Packet)packet).getMessage());
+                packet = (Packet) inStream.readObject();
+                System.out.println("server received: " + packet.getMessage());
 
                 for (int i = 0; i < clientList.size(); i++) {
                     if (!clientList.get(i).equals(socket)) {
