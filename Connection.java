@@ -18,7 +18,6 @@ public class Connection implements Runnable, Serializable {
     private boolean running;
     private static int clientId;
     private volatile Socket returnSocket;
-    private static int numOfLikes;
     Packet packet = null;
 
     public Connection(String host, int port, int clientId, int clientClock) {
@@ -59,47 +58,66 @@ public class Connection implements Runnable, Serializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (packet.getMessage() == null || packet.getMessage().equals("quit")) {
                 break;
             }
             if (packet.getMessage() != null && (!packet.getMessage().equals(""))) {
-                System.out.println("received message:" + packet.getMessage());
-                int senderClockTime = packet.getTime();
-                clientClock =  clientClock > senderClockTime? clientClock : senderClockTime;
-                clientClock++;
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                System.out.println("received packet:" + packet.getMessage());
+                //int senderClockTime = packet.getTime();
+                //clientClock =  clientClock > senderClockTime? clientClock : senderClockTime;
+                //clientClock++;
                 switch (packet.getProcessId()) {
                     case (1) :
-                        System.out.println("in switch: " + Client2.numOfLikes);
-                        numOfLikes = Client2.increaseLikes(packet);
-                        System.out.println("in switch: " + Client2.numOfLikes);
-                        Client2.setClockTime(clientClock);
-                        numOfLikes = Client3.increaseLikes(packet);
-                        Client3.setClockTime(clientClock);
+                        Client2.increaseLikes(packet);
+                        Client2.increaseClockTime(packet);
+                        if (clientId == 2) {
+                            System.out.println("TESTCASE CONTENT     Like: " + Client2.numOfLikes);
+                            System.out.println("Current clock value for Client " + clientId + " is (" + Client2.clockTime + ", " + clientId + ")");
+                        }
+                        Client3.increaseLikes(packet);
+                        Client3.increaseClockTime(packet);
+                        if (clientId == 3) {
+                            System.out.println("TESTCASE CONTENT     Like: " + Client3.numOfLikes);
+                            System.out.println("Current clock value for Client " + clientId + " is (" + Client3.clockTime + ", " + clientId + ")");
+                        }
                         break;
                     case (2) :
-                        numOfLikes = Client1.increaseLikes(packet);
-                        Client1.setClockTime(clientClock);
-                        numOfLikes = Client3.increaseLikes(packet);
-                        Client3.setClockTime(clientClock);
+                        Client1.increaseLikes(packet);
+                        Client1.increaseClockTime(packet);
+                        if (clientId == 1) {
+                            System.out.println("TESTCASE CONTENT     Like: " + Client1.numOfLikes);
+                            System.out.println("Current clock value for Client " + clientId + " is (" + Client1.clockTime + ", " + clientId + ")");
+                        }
+                        Client3.increaseLikes(packet);
+                        Client3.increaseClockTime(packet);
+                        if (clientId == 3) {
+                            System.out.println("TESTCASE CONTENT     Like: " + Client3.numOfLikes);
+                            System.out.println("Current clock value for Client " + clientId + " is (" + Client3.clockTime + ", " + clientId + ")");
+                        }
                         break;
                     case (3) :
-                        numOfLikes = Client1.increaseLikes(packet);
-                        Client1.setClockTime(clientClock);
-                        numOfLikes = Client2.increaseLikes(packet);
-                        Client2.setClockTime(clientClock);
+                        Client1.increaseLikes(packet);
+                        Client1.increaseClockTime(packet);
+                        if (clientId == 1) {
+                            System.out.println("TESTCASE CONTENT     Like: " + Client1.numOfLikes);
+                            System.out.println("Current clock value for Client " + clientId + " is (" + Client1.clockTime + ", " + clientId + ")");
+                        }
+                        Client2.increaseLikes(packet);
+                        Client2.increaseClockTime(packet);
+                        if (clientId == 2) {
+                            System.out.println("TESTCASE CONTENT     Like: " + Client2.numOfLikes);
+                            System.out.println("Current clock value for Client " + clientId + " is (" + Client2.clockTime + ", " + clientId + ")");
+                        }
                         break;
                     default:
                         break;
                 }
-                System.out.println("CLIENT " + clientId + " current clock is " + clientClock);
-                System.out.println("CLIENT " + clientId + " num of likes is " + numOfLikes);
                 packet = null;
-                //System.out.println("Current clock value for Client "+ clientId + " is " + clientClock);
             }
         }
         System.out.println("Connection out of while loop");
