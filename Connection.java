@@ -20,6 +20,10 @@ public class Connection implements Runnable, Serializable {
     private volatile Socket returnSocket;
     Packet packet = null;
 
+    static int REQUEST = 1;
+    static int REPLY = 2;
+    static int RELEASE = 3;
+
     public Connection(String host, int port, int clientId, int clientClock) {
         this.host = host;
         this.port = port;
@@ -58,60 +62,347 @@ public class Connection implements Runnable, Serializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             if (packet.getMessage() == null || packet.getMessage().equals("quit")) {
                 break;
             }
             if (packet.getMessage() != null && (!packet.getMessage().equals(""))) {
-                System.out.println("received packet:" + packet.getMessage());
+                System.out.println("received packet: " + packet.getMessage());
                 //int senderClockTime = packet.getTime();
                 //clientClock =  clientClock > senderClockTime? clientClock : senderClockTime;
                 //clientClock++;
                 switch (packet.getProcessId()) {
                     case (1) :
-                        Client2.increaseLikes(packet);
-                        Client2.increaseClockTime(packet);
-                        if (clientId == 2) {
-                            System.out.println("TESTCASE CONTENT     Like: " + Client2.numOfLikes);
-                            System.out.println("Current clock value for Client " + clientId + " is (" + Client2.clockTime + ", " + clientId + ")");
+                        System.out.println("in case 1 -- sender is 1");
+                        if (clientId == 2)  {
+                            // receive request packet
+                            if (packet.getType() == REQUEST) {
+                                Client2.q2.add(packet);
+
+                                // increase clock time
+                                Client2.increaseClockTime(packet);
+
+                                // construct and send reply packet
+                                try {
+                                    sendReplyPacket(Client1.clockTime, 2);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // receive reply packet
+                            if (packet.getType() == REPLY) {
+                                Client2.increaseClockTime(packet);
+                                Client2.replyCounter++;
+                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client2.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+
+                                    // construct and send release packet
+                                    try {
+                                        sendReleasePacket(Client1.clockTime, 2);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            // receive release packet
+                            if (packet.getType() == RELEASE) {
+                                Client2.increaseLikes();
+
+                                Client2.increaseClockTime(packet);
+                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client2.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+                                }
+                            }
                         }
-                        Client3.increaseLikes(packet);
-                        Client3.increaseClockTime(packet);
-                        if (clientId == 3) {
-                            System.out.println("TESTCASE CONTENT     Like: " + Client3.numOfLikes);
-                            System.out.println("Current clock value for Client " + clientId + " is (" + Client3.clockTime + ", " + clientId + ")");
+
+                        /////////////////////////////////////////////////////////////////
+
+                        if (clientId == 3)  {
+                            // receive request packet
+                            if (packet.getType() == REQUEST) {
+                                Client3.q3.add(packet);
+
+                                // increase clock time
+                                Client3.increaseClockTime(packet);
+
+                                // construct and send reply packet
+                                try {
+                                    sendReplyPacket(Client1.clockTime, 3);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // receive reply packet
+                            if (packet.getType() == REPLY) {
+                                Client3.increaseClockTime(packet);
+                                Client3.replyCounter++;
+                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client3.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+
+                                    // construct and send release packet
+                                    try {
+                                        sendReleasePacket(Client1.clockTime, 3);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            // receive release packet
+                            if (packet.getType() == RELEASE) {
+                                Client3.increaseLikes();
+
+                                Client3.increaseClockTime(packet);
+                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client3.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+                                }
+                            }
                         }
                         break;
+
                     case (2) :
-                        Client1.increaseLikes(packet);
-                        Client1.increaseClockTime(packet);
-                        if (clientId == 1) {
-                            System.out.println("TESTCASE CONTENT     Like: " + Client1.numOfLikes);
-                            System.out.println("Current clock value for Client " + clientId + " is (" + Client1.clockTime + ", " + clientId + ")");
+                        System.out.println("in case 2 -- sender is 2");
+                        if (clientId == 1)  {
+                            // receive request packet
+                            if (packet.getType() == REQUEST) {
+                                Client1.q1.add(packet);
+
+                                // increase clock time
+                                Client1.increaseClockTime(packet);
+
+                                // construct and send reply packet
+                                try {
+                                    sendReplyPacket(Client2.clockTime, 1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // receive reply packet
+                            if (packet.getType() == REPLY) {
+                                System.out.println("client 1 received reply from client 2");
+                                Client1.increaseClockTime(packet);
+                                Client1.replyCounter++;
+                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client1.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+
+                                    // construct and send release packet
+                                    try {
+                                        sendReleasePacket(Client2.clockTime, 1);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            // receive release packet
+                            if (packet.getType() == RELEASE) {
+                                Client1.increaseLikes();
+
+                                Client1.increaseClockTime(packet);
+                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client1.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+                                }
+                            }
                         }
-                        Client3.increaseLikes(packet);
-                        Client3.increaseClockTime(packet);
-                        if (clientId == 3) {
-                            System.out.println("TESTCASE CONTENT     Like: " + Client3.numOfLikes);
-                            System.out.println("Current clock value for Client " + clientId + " is (" + Client3.clockTime + ", " + clientId + ")");
+
+                        /////////////////////////////////////////////////////////////////
+
+                        if (clientId == 3)  {
+                            // receive request packet
+                            if (packet.getType() == REQUEST) {
+                                Client3.q3.add(packet);
+
+                                // increase clock time
+                                Client3.increaseClockTime(packet);
+
+                                // construct and send reply packet
+                                try {
+                                    sendReplyPacket(Client2.clockTime, 3);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // receive reply packet
+                            if (packet.getType() == REPLY) {
+                                Client3.increaseClockTime(packet);
+                                Client3.replyCounter++;
+                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client3.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+
+                                    // construct and send release packet
+                                    try {
+                                        sendReleasePacket(Client2.clockTime, 3);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            // receive release packet
+                            if (packet.getType() == RELEASE) {
+                                Client3.increaseLikes();
+
+                                Client3.increaseClockTime(packet);
+                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client3.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+                                }
+                            }
                         }
                         break;
+
                     case (3) :
-                        Client1.increaseLikes(packet);
-                        Client1.increaseClockTime(packet);
-                        if (clientId == 1) {
-                            System.out.println("TESTCASE CONTENT     Like: " + Client1.numOfLikes);
-                            System.out.println("Current clock value for Client " + clientId + " is (" + Client1.clockTime + ", " + clientId + ")");
+                        System.out.println("in case 3 -- sender is 3");
+                        if (clientId == 1)  {
+                            // receive request packet
+                            if (packet.getType() == REQUEST) {
+                                Client1.q1.add(packet);
+
+                                // increase clock time
+                                Client1.increaseClockTime(packet);
+
+                                // construct and send reply packet
+                                try {
+                                    sendReplyPacket(Client3.clockTime, 1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // receive reply packet
+                            if (packet.getType() == REPLY) {
+                                Client1.increaseClockTime(packet);
+                                Client1.replyCounter++;
+                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client1.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+
+                                    // construct and send release packet
+                                    try {
+                                        sendReleasePacket(Client3.clockTime, 1);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            // receive release packet
+                            if (packet.getType() == RELEASE) {
+                                Client1.increaseLikes();
+
+                                Client1.increaseClockTime(packet);
+                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client1.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+                                }
+                            }
                         }
-                        Client2.increaseLikes(packet);
-                        Client2.increaseClockTime(packet);
-                        if (clientId == 2) {
-                            System.out.println("TESTCASE CONTENT     Like: " + Client2.numOfLikes);
-                            System.out.println("Current clock value for Client " + clientId + " is (" + Client2.clockTime + ", " + clientId + ")");
+
+                        /////////////////////////////////////////////////////////////////
+
+                        if (clientId == 2)  {
+                            // receive request packet
+                            if (packet.getType() == REQUEST) {
+                                Client2.q2.add(packet);
+
+                                // increase clock time
+                                Client2.increaseClockTime(packet);
+
+                                // construct and send reply packet
+                                try {
+                                    sendReplyPacket(Client3.clockTime, 2);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            // receive reply packet
+                            if (packet.getType() == REPLY) {
+                                Client2.increaseClockTime(packet);
+                                Client2.replyCounter++;
+                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client2.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+
+                                    // construct and send release packet
+                                    try {
+                                        sendReleasePacket(Client3.clockTime, 2);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            // receive release packet
+                            if (packet.getType() == RELEASE) {
+                                Client2.increaseLikes();
+
+                                Client2.increaseClockTime(packet);
+                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    // enter critical section
+                                    sleep(5000);
+                                    Client2.increaseLikes();
+                                    Client2.q2.poll();
+                                    Client1.q1.poll();
+                                    Client3.q3.poll();
+                                }
+                            }
                         }
                         break;
                     default:
@@ -154,5 +445,25 @@ public class Connection implements Runnable, Serializable {
     public void write(Packet packet) throws IOException {
         outStream.writeObject(packet);
         outStream.flush();
+    }
+
+    public void sendReplyPacket(int clockTime, int procId) throws IOException {
+        Packet p = new Packet(REPLY, "this is a reply packet", procId, clockTime+1, 0); //todo
+        outStream.writeObject(p);
+        outStream.flush();
+    }
+
+    public void sendReleasePacket(int clockTime, int procId) throws IOException {
+        Packet p = new Packet(RELEASE, "this is a release packet", procId, clockTime+1, 0); //todo
+        outStream.writeObject(p);
+        outStream.flush();
+    }
+
+    public void sleep(int milisec) {
+        try {
+            Thread.sleep(milisec);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

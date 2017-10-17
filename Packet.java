@@ -8,17 +8,22 @@ public class Packet implements Serializable {
 
     private int numOfLikes;
 
+    private int type;
+
     /**
      * Piggyback time from sender process.
      */
     private final int time;
 
-    public Packet(String message, int processId, int time, int numOfLikes) {
+    public Packet(int type, String message, int processId, int time, int numOfLikes) {
+        this.type = type;
         this.message = message;
         this.processId = processId;
         this.time = time;
         this.numOfLikes = numOfLikes;
     }
+
+    public int getType() {return type; }
 
     public String getMessage() {
         return message;
