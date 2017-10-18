@@ -1,5 +1,3 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -25,7 +23,6 @@ class ServerClientThread extends Thread {
                 for (int i = 0; i < clientList.size(); i++) {
                     if (!clientList.get(i).equals(socket)) {
                         ObjectOutputStream outStream = new ObjectOutputStream(clientList.get(i).getOutputStream());
-                        //System.out.println("server trying to write to socket" + clientList.get(i));
                         outStream.writeObject(packet);
                     }
                 }

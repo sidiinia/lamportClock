@@ -2,9 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Client1 {
     public static int clockTime = 0;
@@ -12,7 +10,6 @@ public class Client1 {
     public static volatile int numOfLikes = 0;
     public static volatile int replyCounter = 0;
     public static volatile boolean critical = false;
-    //public static boolean ready = false;
 
     public static PriorityQueue<Packet> q1 = new PriorityQueue<>(10, new Comparator<Packet>() {
 
@@ -28,8 +25,7 @@ public class Client1 {
     });
 
     static int REQUEST = 1;
-    static int REPLY = 2;
-    static int RELEASE = 3;
+
     public static Packet packet;
 
     public static void main(String[] args) throws Exception {
@@ -48,12 +44,10 @@ public class Client1 {
                 clientMessage = br.readLine();
                 if (!clientMessage.equals("")) {
                     if (clientMessage.equals("like")) {
-                        //Thread.sleep(5000);
                         clockTime++;
                         System.out.println("Current clock value for Client 1 is (" + clockTime + ", " + procId + ")");
                         packet = new Packet(REQUEST,"Request packet from client 1", procId, clockTime, numOfLikes);
                         q1.add(packet);
-                        //ready = false;
                         c1.write(packet);
                         c2.write(packet);
                     }
@@ -69,7 +63,6 @@ public class Client1 {
         clockTime = clockTime > packet.getTime() ? clockTime : packet.getTime();
         clockTime++;
         System.out.println("Lamport Clock for Client 1 is (" + clockTime + ", 1)");
-        //System.out.println("Current clock value for Client 1 is (" + clockTime + ", " + procId + ")");
     }
 
     public static int increaseLikes() {

@@ -1,4 +1,3 @@
-import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.net.Socket;
 
@@ -7,8 +6,6 @@ public class Connection implements Runnable, Serializable{
     private String host;
     private int port;
     private static int clientClock;
-    //private DataOutputStream outStream;
-    //private DataInputStream inStream;
     private ObjectOutputStream outStream;
     private ObjectInputStream inStream;
     private boolean running;
@@ -31,8 +28,6 @@ public class Connection implements Runnable, Serializable{
         try {
             System.out.println("initialize connection for port " + port);
             returnSocket = new Socket(host, port);
-            //outStream = new DataOutputStream(returnSocket.getOutputStream());
-            //inStream = new DataInputStream(returnSocket.getInputStream());
         } catch (IOException e) {
 
         }
@@ -115,7 +110,6 @@ public class Connection implements Runnable, Serializable{
 
         ObjectInputStream inStream = new ObjectInputStream(returnSocket.getInputStream());
         Packet packet = null;
-        //System.out.println("in function read");
         try {
             packet = (Packet)inStream.readObject();
         } catch (EOFException e) {
@@ -126,7 +120,6 @@ public class Connection implements Runnable, Serializable{
             e.printStackTrace();
         }
         //inStream.close();
-        //System.out.println("finish reading");
         return packet;
     }
 

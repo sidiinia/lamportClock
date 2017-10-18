@@ -1,15 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.Socket;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class Client2 {
     public static int clockTime = 0;
@@ -33,8 +26,6 @@ public class Client2 {
     });
 
     static int REQUEST = 1;
-    static int REPLY = 2;
-    static int RELEASE = 3;
 
     public static void main(String[] args) throws Exception {
 
@@ -55,12 +46,8 @@ public class Client2 {
                         //Thread.sleep(5000);
                         clockTime++;
                         System.out.println("Current clock value for Client 2 is (" + clockTime + ", " + procId + ")");
-                        //System.out.println("CLIENT 2: "+ clockTime);
-                        //numOfLikes++;
-                        //System.out.println("TESTCASE CONTENT     Like: " + numOfLikes);
                         Packet packet = new Packet(REQUEST, "Request packet from client 2", procId, clockTime, numOfLikes);
                         q2.add(packet);
-                        //ready = false;
                         c1.write(packet);
                         c2.write(packet);
                     }
@@ -75,7 +62,6 @@ public class Client2 {
         clockTime = clockTime > packet.getTime() ? clockTime : packet.getTime();
         clockTime++;
         System.out.println("Lamport Clock for Client 2 is (" + clockTime + ", 2)");
-        //System.out.println("Current clock value for Client 2 is (" + clockTime + ", " + procId + ")");
     }
 
     public static int increaseLikes() {
