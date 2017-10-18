@@ -1,12 +1,8 @@
 import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.net.Socket;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-public class Connection implements Runnable, Serializable {
+public class Connection implements Runnable, Serializable{
 
     private String host;
     private int port;
@@ -63,18 +59,12 @@ public class Connection implements Runnable, Serializable {
                 e.printStackTrace();
             }
 
-            if (packet.getMessage() == null || packet.getMessage().equals("quit")) {
-                break;
-            }
             if (packet.getMessage() != null && (!packet.getMessage().equals(""))) {
-                System.out.println("received packet: " + packet.getMessage());
-                //int senderClockTime = packet.getTime();
-                //clientClock =  clientClock > senderClockTime? clientClock : senderClockTime;
-                //clientClock++;
                 switch (packet.getProcessId()) {
                     case (1) :
                         System.out.println("in case 1 -- sender is 1");
                         if (clientId == 2)  {
+                            System.out.println("Client 2 received packet: " + packet.getMessage());
                             // receive request packet
                             if (packet.getType() == REQUEST) {
                                 Client2.q2.add(packet);
@@ -93,36 +83,35 @@ public class Connection implements Runnable, Serializable {
                             // receive reply packet
                             if (packet.getType() == REPLY) {
                                 Client2.increaseClockTime(packet);
-                                Client2.replyCounter++;
+                                Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
+                                System.out.println("Client 2 has " + Client2.replyCounter + " reply");
+
                                 if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    System.out.println("2 received all replies");
+                                    Client2.q2.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client2.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
-
-                                    // construct and send release packet
-                                    try {
-                                        sendReleasePacket(Client1.clockTime, 2);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                    Client2.replyCounter++;                                }
+                                /*while (!Client2.ready) {}
+                                // construct and send release packet
+                                try {
+                                    sendReleasePacket(Client1.clockTime, 2);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
                             }
 
                             // receive release packet
                             if (packet.getType() == RELEASE) {
+                                Client2.q2.poll();
                                 Client2.increaseLikes();
-
                                 Client2.increaseClockTime(packet);
-                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                if (!Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    Client2.q2.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client2.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
                                 }
                             }
                         }
@@ -130,6 +119,7 @@ public class Connection implements Runnable, Serializable {
                         /////////////////////////////////////////////////////////////////
 
                         if (clientId == 3)  {
+                            System.out.println("Client 3 received packet: " + packet.getMessage());
                             // receive request packet
                             if (packet.getType() == REQUEST) {
                                 Client3.q3.add(packet);
@@ -148,36 +138,35 @@ public class Connection implements Runnable, Serializable {
                             // receive reply packet
                             if (packet.getType() == REPLY) {
                                 Client3.increaseClockTime(packet);
-                                Client3.replyCounter++;
+                                Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
+                                System.out.println("Client 3 has " + Client3.replyCounter + " reply");
                                 if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    System.out.println("3 received all replies");
+                                    Client3.q3.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client3.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
+                                    Client3.replyCounter++;                                }
+                                /*while (!Client3.ready) {}
 
-                                    // construct and send release packet
-                                    try {
-                                        sendReleasePacket(Client1.clockTime, 3);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                // construct and send release packet
+                                try {
+                                    sendReleasePacket(Client1.clockTime, 3);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
                             }
 
                             // receive release packet
                             if (packet.getType() == RELEASE) {
+                                Client3.q3.poll();
                                 Client3.increaseLikes();
-
                                 Client3.increaseClockTime(packet);
-                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                if (!Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    Client3.q3.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client3.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
                                 }
                             }
                         }
@@ -186,6 +175,7 @@ public class Connection implements Runnable, Serializable {
                     case (2) :
                         System.out.println("in case 2 -- sender is 2");
                         if (clientId == 1)  {
+                            System.out.println("Client 1 received packet: " + packet.getMessage());
                             // receive request packet
                             if (packet.getType() == REQUEST) {
                                 Client1.q1.add(packet);
@@ -203,38 +193,35 @@ public class Connection implements Runnable, Serializable {
 
                             // receive reply packet
                             if (packet.getType() == REPLY) {
-                                System.out.println("client 1 received reply from client 2");
                                 Client1.increaseClockTime(packet);
-                                Client1.replyCounter++;
+                                Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
+                                System.out.println("Client 1 has " + Client1.replyCounter + " reply");
                                 if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    System.out.println("1 received all replies");
+                                    Client1.q1.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client1.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
-
-                                    // construct and send release packet
-                                    try {
-                                        sendReleasePacket(Client2.clockTime, 1);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                    Client1.replyCounter++;                                }
+                                /*while (!Client1.ready) {}
+                                // construct and send release packet
+                                try {
+                                    sendReleasePacket(Client2.clockTime, 1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
                             }
 
                             // receive release packet
                             if (packet.getType() == RELEASE) {
+                                Client1.q1.poll();
                                 Client1.increaseLikes();
-
                                 Client1.increaseClockTime(packet);
-                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                if (!Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    Client1.q1.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client1.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
                                 }
                             }
                         }
@@ -242,6 +229,7 @@ public class Connection implements Runnable, Serializable {
                         /////////////////////////////////////////////////////////////////
 
                         if (clientId == 3)  {
+                            System.out.println("Client 3 received packet: " + packet.getMessage());
                             // receive request packet
                             if (packet.getType() == REQUEST) {
                                 Client3.q3.add(packet);
@@ -260,36 +248,35 @@ public class Connection implements Runnable, Serializable {
                             // receive reply packet
                             if (packet.getType() == REPLY) {
                                 Client3.increaseClockTime(packet);
-                                Client3.replyCounter++;
+                                Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
+                                System.out.println("Client 3 has " + Client3.replyCounter + " reply");
                                 if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    System.out.println("3 received all replies");
+                                    Client3.q3.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client3.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
-
-                                    // construct and send release packet
-                                    try {
-                                        sendReleasePacket(Client2.clockTime, 3);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                                    Client3.replyCounter++;
                                 }
+                                /*while (!Client3.ready) {}
+                                // construct and send release packet
+                                try {
+                                    sendReleasePacket(Client2.clockTime, 3);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
                             }
 
                             // receive release packet
                             if (packet.getType() == RELEASE) {
+                                Client3.q3.poll();
                                 Client3.increaseLikes();
-
                                 Client3.increaseClockTime(packet);
-                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                if (!Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                                    Client3.q3.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client3.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
                                 }
                             }
                         }
@@ -298,6 +285,7 @@ public class Connection implements Runnable, Serializable {
                     case (3) :
                         System.out.println("in case 3 -- sender is 3");
                         if (clientId == 1)  {
+                            System.out.println("Client 1 received packet: " + packet.getMessage());
                             // receive request packet
                             if (packet.getType() == REQUEST) {
                                 Client1.q1.add(packet);
@@ -316,36 +304,35 @@ public class Connection implements Runnable, Serializable {
                             // receive reply packet
                             if (packet.getType() == REPLY) {
                                 Client1.increaseClockTime(packet);
-                                Client1.replyCounter++;
+                                Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
+                                System.out.println("Client 1 has " + Client1.replyCounter + " reply");
                                 if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    System.out.println("1 received all replies");
+                                    Client1.q1.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client1.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
+                                    Client1.replyCounter++;                                }
+                                /*while (!Client1.ready) {}
 
-                                    // construct and send release packet
-                                    try {
-                                        sendReleasePacket(Client3.clockTime, 1);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                // construct and send release packet
+                                try {
+                                    sendReleasePacket(Client3.clockTime, 1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
                             }
 
                             // receive release packet
                             if (packet.getType() == RELEASE) {
+                                Client1.q1.poll();
                                 Client1.increaseLikes();
-
                                 Client1.increaseClockTime(packet);
-                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                if (!Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                                    Client1.q1.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client1.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
                                 }
                             }
                         }
@@ -353,6 +340,7 @@ public class Connection implements Runnable, Serializable {
                         /////////////////////////////////////////////////////////////////
 
                         if (clientId == 2)  {
+                            System.out.println("Client 2 received packet: " + packet.getMessage());
                             // receive request packet
                             if (packet.getType() == REQUEST) {
                                 Client2.q2.add(packet);
@@ -371,41 +359,40 @@ public class Connection implements Runnable, Serializable {
                             // receive reply packet
                             if (packet.getType() == REPLY) {
                                 Client2.increaseClockTime(packet);
-                                Client2.replyCounter++;
+                                Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
+                                System.out.println("Client 2 has " + Client2.replyCounter + " reply");
                                 if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    System.out.println("2 received all replies");
+                                    Client2.q2.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client2.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
-
-                                    // construct and send release packet
-                                    try {
-                                        sendReleasePacket(Client3.clockTime, 2);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                    Client2.replyCounter++;                                }
+                                /*while (!Client2.ready) {}
+                                // construct and send release packet
+                                try {
+                                    sendReleasePacket(Client3.clockTime, 2);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
                             }
 
                             // receive release packet
                             if (packet.getType() == RELEASE) {
+                                Client2.q2.poll();
                                 Client2.increaseLikes();
-
                                 Client2.increaseClockTime(packet);
-                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                if (!Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                                    Client2.q2.poll();
                                     // enter critical section
                                     sleep(5000);
                                     Client2.increaseLikes();
-                                    Client2.q2.poll();
-                                    Client1.q1.poll();
-                                    Client3.q3.poll();
                                 }
                             }
                         }
                         break;
                     default:
+                        System.out.println("Out of implemented clients scope");
                         break;
                 }
                 packet = null;
@@ -448,13 +435,15 @@ public class Connection implements Runnable, Serializable {
     }
 
     public void sendReplyPacket(int clockTime, int procId) throws IOException {
-        Packet p = new Packet(REPLY, "this is a reply packet", procId, clockTime+1, 0); //todo
+        System.out.println("Sending reply packet from client " + procId + "...");
+        Packet p = new Packet(REPLY, "Reply packet from client " + procId, procId, clockTime+1, 0); //todo
         outStream.writeObject(p);
         outStream.flush();
     }
 
     public void sendReleasePacket(int clockTime, int procId) throws IOException {
-        Packet p = new Packet(RELEASE, "this is a release packet", procId, clockTime+1, 0); //todo
+        System.out.println("Sending release packet from client " + procId + "...");
+        Packet p = new Packet(RELEASE, "Release packet from client " + procId, procId, clockTime+1, 0); //todo
         outStream.writeObject(p);
         outStream.flush();
     }

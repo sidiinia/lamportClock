@@ -16,6 +16,7 @@ public class Client2 {
     public static int procId = 2;
     public static int numOfLikes = 0;
     public static int replyCounter = 0;
+    //public static boolean ready = false;
 
     public static PriorityQueue<Packet> q2 = new PriorityQueue<>(10, new Comparator<Packet>() {
         @Override
@@ -48,18 +49,23 @@ public class Client2 {
 
                 clientMessage = br.readLine();
                 if (!clientMessage.equals("")) {
-                    System.out.println("user input is " + clientMessage);
                     if (clientMessage.equals("like")) {
                         //Thread.sleep(5000);
                         clockTime++;
                         System.out.println("Current clock value for Client 2 is (" + clockTime + ", " + procId + ")");
                         //System.out.println("CLIENT 2: "+ clockTime);
-                        numOfLikes++;
-                        System.out.println("TESTCASE CONTENT     Like: " + numOfLikes);
-                        Packet packet = new Packet(REQUEST, "this is a request packet from client 2", procId, clockTime, numOfLikes);
+                        //numOfLikes++;
+                        //System.out.println("TESTCASE CONTENT     Like: " + numOfLikes);
+                        Packet packet = new Packet(REQUEST, "Request packet from client 2", procId, clockTime, numOfLikes);
                         q2.add(packet);
+                        //ready = false;
                         c1.write(packet);
                         c2.write(packet);
+
+                        // when replyCounter is 3, client is ready to release
+                        while (replyCounter != 3) {}
+                        c1.sendReleasePacket(Client1.clockTime, procId);
+                        c2.sendReleasePacket(Client3.clockTime, procId);
                     }
                 }
             }
