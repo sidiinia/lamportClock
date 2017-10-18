@@ -10,6 +10,7 @@ public class Client3 {
     public static volatile int numOfLikes = 0;
     public static volatile int replyCounter = 0;
     public static volatile boolean critical = false;
+    public static Packet packet;
 
     public static PriorityQueue<Packet> q3 = new PriorityQueue<>(10, new Comparator<Packet>() {
 
@@ -44,9 +45,12 @@ public class Client3 {
                     if (clientMessage.equals("like")) {
                         clockTime++;
                         System.out.println("Current clock value for Client 3 is (" + clockTime + ", " + procId + ")");
-                        Packet packet = new Packet(REQUEST, "Request packet from client 3", procId, clockTime, numOfLikes);
-                        q3.add(packet);
+                        packet = new Packet(REQUEST, "Request packet from client 3", procId, clockTime, numOfLikes);
                         c1.write(packet);
+                        clockTime++;
+                        System.out.println("Current clock value for Client 3 is (" + clockTime + ", " + procId + ")");
+                        packet = new Packet(REQUEST, "Request packet from client 3", procId, clockTime, numOfLikes);
+                        q3.add(packet);
                         c2.write(packet);
                     }
                 }

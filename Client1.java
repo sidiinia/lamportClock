@@ -47,8 +47,11 @@ public class Client1 {
                         clockTime++;
                         System.out.println("Current clock value for Client 1 is (" + clockTime + ", " + procId + ")");
                         packet = new Packet(REQUEST,"Request packet from client 1", procId, clockTime, numOfLikes);
-                        q1.add(packet);
                         c1.write(packet);
+                        clockTime++;
+                        System.out.println("Current clock value for Client 1 is (" + clockTime + ", " + procId + ")");
+                        packet = new Packet(REQUEST,"Request packet from client 1", procId, clockTime, numOfLikes);
+                        q1.add(packet);
                         c2.write(packet);
                     }
                 }

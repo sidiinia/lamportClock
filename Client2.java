@@ -26,6 +26,7 @@ public class Client2 {
     });
 
     static int REQUEST = 1;
+    public static Packet packet;
 
     public static void main(String[] args) throws Exception {
 
@@ -46,9 +47,12 @@ public class Client2 {
                         //Thread.sleep(5000);
                         clockTime++;
                         System.out.println("Current clock value for Client 2 is (" + clockTime + ", " + procId + ")");
-                        Packet packet = new Packet(REQUEST, "Request packet from client 2", procId, clockTime, numOfLikes);
-                        q2.add(packet);
+                        packet = new Packet(REQUEST, "Request packet from client 2", procId, clockTime, numOfLikes);
                         c1.write(packet);
+                        clockTime++;
+                        System.out.println("Current clock value for Client 2 is (" + clockTime + ", " + procId + ")");
+                        packet = new Packet(REQUEST, "Request packet from client 2", procId, clockTime, numOfLikes);
+                        q2.add(packet);
                         c2.write(packet);
                     }
                 }

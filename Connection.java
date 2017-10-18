@@ -59,33 +59,33 @@ public class Connection implements Runnable, Serializable{
                     case (1) :
                         System.out.println("in case 1 -- sender is 1");
                         if (clientId == 2)  {
-                            client2Handler(packet,Client1.clockTime);
+                            client2Handler(packet);
                         }
 
                         if (clientId == 3)  {
-                            client3Handler(packet, Client1.clockTime);
+                            client3Handler(packet);
                         }
                         break;
 
                     case (2) :
                         System.out.println("in case 2 -- sender is 2");
                         if (clientId == 1)  {
-                            client1Handler(packet, Client2.clockTime);
+                            client1Handler(packet);
                         }
 
                         if (clientId == 3)  {
-                            client3Handler(packet, Client2.clockTime);
+                            client3Handler(packet);
                         }
                         break;
 
                     case (3) :
                         System.out.println("in case 3 -- sender is 3");
                         if (clientId == 1)  {
-                            client1Handler(packet, Client3.clockTime);
+                            client1Handler(packet);
                         }
 
                         if (clientId == 2)  {
-                            client2Handler(packet, Client3.clockTime);
+                            client2Handler(packet);
                         }
                         break;
                     default:
@@ -131,14 +131,14 @@ public class Connection implements Runnable, Serializable{
 
     public void sendReplyPacket(int clockTime, int procId) throws IOException {
         System.out.println("Sending reply packet from client " + procId + "...");
-        Packet p = new Packet(REPLY, "Reply packet from client " + procId, procId, clockTime+1, 0); //todo
+        Packet p = new Packet(REPLY, "Reply packet from client " + procId, procId, clockTime, 0); //todo
         outStream.writeObject(p);
         outStream.flush();
     }
 
     public void sendReleasePacket(int clockTime, int procId) throws IOException {
         System.out.println("Sending release packet from client " + procId + "...");
-        Packet p = new Packet(RELEASE, "Release packet from client " + procId, procId, clockTime+1, 0); //todo
+        Packet p = new Packet(RELEASE, "Release packet from client " + procId, procId, clockTime, 0); //todo
         outStream.writeObject(p);
         outStream.flush();
     }
@@ -151,7 +151,7 @@ public class Connection implements Runnable, Serializable{
         }
     }
 
-    public synchronized void client1Handler(Packet packet, int clockTime) {
+    public synchronized void client1Handler(Packet packet) {
         System.out.println("Client 1 received packet: " + packet.getMessage());
         // receive request packet
         if (packet.getType() == REQUEST) {
@@ -165,7 +165,7 @@ public class Connection implements Runnable, Serializable{
             // construct and send reply packet
             try {
                 Client1.increaseClockTime(packet);
-                sendReplyPacket(clockTime, 1);
+                sendReplyPacket(Client1.clockTime, 1);
                 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -191,7 +191,7 @@ public class Connection implements Runnable, Serializable{
             while (Client1.replyCounter != 3) {}
             try {
                 Client1.increaseClockTime(packet);
-                sendReleasePacket(clockTime, 1);
+                sendReleasePacket(Client1.clockTime, 1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -214,7 +214,7 @@ public class Connection implements Runnable, Serializable{
         }
     }
 
-    public synchronized void client2Handler(Packet packet, int clockTime) {
+    public synchronized void client2Handler(Packet packet) {
         System.out.println("Client 2 received packet: " + packet.getMessage());
         // receive request packet
         if (packet.getType() == REQUEST) {
@@ -226,7 +226,7 @@ public class Connection implements Runnable, Serializable{
             // construct and send reply packet
             try {
                 Client2.increaseClockTime(packet);
-                sendReplyPacket(clockTime, 2);
+                sendReplyPacket(Client2.clockTime, 2);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -252,7 +252,7 @@ public class Connection implements Runnable, Serializable{
             while (Client2.replyCounter != 3) {}
             try {
                 Client2.increaseClockTime(packet);
-                sendReleasePacket(clockTime, 2);
+                sendReleasePacket(Client2.clockTime, 2);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -275,7 +275,7 @@ public class Connection implements Runnable, Serializable{
         }
     }
 
-    public synchronized void client3Handler(Packet packet, int clockTime) {
+    public synchronized void client3Handler(Packet packet) {
         System.out.println("Client 3 received packet: " + packet.getMessage());
         // receive request packet
         if (packet.getType() == REQUEST) {
@@ -286,8 +286,8 @@ public class Connection implements Runnable, Serializable{
             while (Client3.critical) {}
             // construct and send reply packet
             try {
-                Client3.increaseClockTime(packet);
-                sendReplyPacket(clockTime, 3);
+                Client3.clockTime++;
+                sendReplyPacket(Client3.clockTime, 3);
                
             } catch (IOException e) {
                 e.printStackTrace();
@@ -313,7 +313,7 @@ public class Connection implements Runnable, Serializable{
             while (Client3.replyCounter != 3) {}
             try {
                 Client3.increaseClockTime(packet);
-                sendReleasePacket(clockTime, 3);
+                sendReleasePacket(Client3.clockTime, 3);
                 
             } catch (IOException e) {
                 e.printStackTrace();
