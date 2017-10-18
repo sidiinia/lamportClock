@@ -164,7 +164,9 @@ public class Connection implements Runnable, Serializable{
 
             // construct and send reply packet
             try {
+                Client1.increaseClockTime(packet);
                 sendReplyPacket(clockTime, 1);
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -188,6 +190,7 @@ public class Connection implements Runnable, Serializable{
             // when replyCounter is 3, client is ready to release
             while (Client1.replyCounter != 3) {}
             try {
+                Client1.increaseClockTime(packet);
                 sendReleasePacket(clockTime, 1);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -222,6 +225,7 @@ public class Connection implements Runnable, Serializable{
             while (Client2.critical) {}
             // construct and send reply packet
             try {
+                Client2.increaseClockTime(packet);
                 sendReplyPacket(clockTime, 2);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -247,6 +251,7 @@ public class Connection implements Runnable, Serializable{
             // when replyCounter is 3, client is ready to release
             while (Client2.replyCounter != 3) {}
             try {
+                Client2.increaseClockTime(packet);
                 sendReleasePacket(clockTime, 2);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -281,7 +286,9 @@ public class Connection implements Runnable, Serializable{
             while (Client3.critical) {}
             // construct and send reply packet
             try {
+                Client3.increaseClockTime(packet);
                 sendReplyPacket(clockTime, 3);
+               
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -305,7 +312,9 @@ public class Connection implements Runnable, Serializable{
             // when replyCounter is 3, client is ready to release
             while (Client3.replyCounter != 3) {}
             try {
+                Client3.increaseClockTime(packet);
                 sendReleasePacket(clockTime, 3);
+                
             } catch (IOException e) {
                 e.printStackTrace();
             }
