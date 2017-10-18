@@ -9,8 +9,9 @@ import java.util.Queue;
 public class Client1 {
     public static int clockTime = 0;
     public static int procId = 1;
-    public static int numOfLikes = 0;
-    public static int replyCounter = 0;
+    public static volatile int numOfLikes = 0;
+    public static volatile int replyCounter = 0;
+    public static volatile boolean critical = false;
     //public static boolean ready = false;
 
     public static PriorityQueue<Packet> q1 = new PriorityQueue<>(10, new Comparator<Packet>() {
@@ -55,11 +56,6 @@ public class Client1 {
                         //ready = false;
                         c1.write(packet);
                         c2.write(packet);
-
-                        // when replyCounter is 3, client is ready to release
-                        while (replyCounter != 3) {}
-                        c1.sendReleasePacket(Client3.clockTime, procId);
-                        c2.sendReleasePacket(Client2.clockTime, procId);
                     }
                 }
 

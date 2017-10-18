@@ -64,331 +64,33 @@ public class Connection implements Runnable, Serializable{
                     case (1) :
                         System.out.println("in case 1 -- sender is 1");
                         if (clientId == 2)  {
-                            System.out.println("Client 2 received packet: " + packet.getMessage());
-                            // receive request packet
-                            if (packet.getType() == REQUEST) {
-                                Client2.q2.add(packet);
-
-                                // increase clock time
-                                Client2.increaseClockTime(packet);
-
-                                // construct and send reply packet
-                                try {
-                                    sendReplyPacket(Client1.clockTime, 2);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // receive reply packet
-                            if (packet.getType() == REPLY) {
-                                Client2.increaseClockTime(packet);
-                                Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
-                                System.out.println("Client 2 has " + Client2.replyCounter + " reply");
-
-                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
-                                    System.out.println("2 received all replies");
-                                    Client2.q2.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client2.increaseLikes();
-                                    Client2.replyCounter++;                                }
-                                /*while (!Client2.ready) {}
-                                // construct and send release packet
-                                try {
-                                    sendReleasePacket(Client1.clockTime, 2);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                            }
-
-                            // receive release packet
-                            if (packet.getType() == RELEASE) {
-                                Client2.q2.poll();
-                                Client2.increaseLikes();
-                                Client2.increaseClockTime(packet);
-                                if (!Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
-                                    Client2.q2.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client2.increaseLikes();
-                                }
-                            }
+                            client2Handler(packet,Client1.clockTime);
                         }
 
-                        /////////////////////////////////////////////////////////////////
-
                         if (clientId == 3)  {
-                            System.out.println("Client 3 received packet: " + packet.getMessage());
-                            // receive request packet
-                            if (packet.getType() == REQUEST) {
-                                Client3.q3.add(packet);
-
-                                // increase clock time
-                                Client3.increaseClockTime(packet);
-
-                                // construct and send reply packet
-                                try {
-                                    sendReplyPacket(Client1.clockTime, 3);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // receive reply packet
-                            if (packet.getType() == REPLY) {
-                                Client3.increaseClockTime(packet);
-                                Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
-                                System.out.println("Client 3 has " + Client3.replyCounter + " reply");
-                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
-                                    System.out.println("3 received all replies");
-                                    Client3.q3.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client3.increaseLikes();
-                                    Client3.replyCounter++;                                }
-                                /*while (!Client3.ready) {}
-
-                                // construct and send release packet
-                                try {
-                                    sendReleasePacket(Client1.clockTime, 3);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                            }
-
-                            // receive release packet
-                            if (packet.getType() == RELEASE) {
-                                Client3.q3.poll();
-                                Client3.increaseLikes();
-                                Client3.increaseClockTime(packet);
-                                if (!Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
-                                    Client3.q3.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client3.increaseLikes();
-                                }
-                            }
+                            client3Handler(packet, Client1.clockTime);
                         }
                         break;
 
                     case (2) :
                         System.out.println("in case 2 -- sender is 2");
                         if (clientId == 1)  {
-                            System.out.println("Client 1 received packet: " + packet.getMessage());
-                            // receive request packet
-                            if (packet.getType() == REQUEST) {
-                                Client1.q1.add(packet);
-
-                                // increase clock time
-                                Client1.increaseClockTime(packet);
-
-                                // construct and send reply packet
-                                try {
-                                    sendReplyPacket(Client2.clockTime, 1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // receive reply packet
-                            if (packet.getType() == REPLY) {
-                                Client1.increaseClockTime(packet);
-                                Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
-                                System.out.println("Client 1 has " + Client1.replyCounter + " reply");
-                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
-                                    System.out.println("1 received all replies");
-                                    Client1.q1.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client1.increaseLikes();
-                                    Client1.replyCounter++;                                }
-                                /*while (!Client1.ready) {}
-                                // construct and send release packet
-                                try {
-                                    sendReleasePacket(Client2.clockTime, 1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                            }
-
-                            // receive release packet
-                            if (packet.getType() == RELEASE) {
-                                Client1.q1.poll();
-                                Client1.increaseLikes();
-                                Client1.increaseClockTime(packet);
-                                if (!Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
-                                    Client1.q1.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client1.increaseLikes();
-                                }
-                            }
+                            client1Handler(packet, Client2.clockTime);
                         }
 
-                        /////////////////////////////////////////////////////////////////
-
                         if (clientId == 3)  {
-                            System.out.println("Client 3 received packet: " + packet.getMessage());
-                            // receive request packet
-                            if (packet.getType() == REQUEST) {
-                                Client3.q3.add(packet);
-
-                                // increase clock time
-                                Client3.increaseClockTime(packet);
-
-                                // construct and send reply packet
-                                try {
-                                    sendReplyPacket(Client2.clockTime, 3);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // receive reply packet
-                            if (packet.getType() == REPLY) {
-                                Client3.increaseClockTime(packet);
-                                Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
-                                System.out.println("Client 3 has " + Client3.replyCounter + " reply");
-                                if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
-                                    System.out.println("3 received all replies");
-                                    Client3.q3.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client3.increaseLikes();
-                                    Client3.replyCounter++;
-                                }
-                                /*while (!Client3.ready) {}
-                                // construct and send release packet
-                                try {
-                                    sendReleasePacket(Client2.clockTime, 3);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                            }
-
-                            // receive release packet
-                            if (packet.getType() == RELEASE) {
-                                Client3.q3.poll();
-                                Client3.increaseLikes();
-                                Client3.increaseClockTime(packet);
-                                if (!Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
-                                    Client3.q3.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client3.increaseLikes();
-                                }
-                            }
+                            client3Handler(packet, Client2.clockTime);
                         }
                         break;
 
                     case (3) :
                         System.out.println("in case 3 -- sender is 3");
                         if (clientId == 1)  {
-                            System.out.println("Client 1 received packet: " + packet.getMessage());
-                            // receive request packet
-                            if (packet.getType() == REQUEST) {
-                                Client1.q1.add(packet);
-
-                                // increase clock time
-                                Client1.increaseClockTime(packet);
-
-                                // construct and send reply packet
-                                try {
-                                    sendReplyPacket(Client3.clockTime, 1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // receive reply packet
-                            if (packet.getType() == REPLY) {
-                                Client1.increaseClockTime(packet);
-                                Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
-                                System.out.println("Client 1 has " + Client1.replyCounter + " reply");
-                                if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
-                                    System.out.println("1 received all replies");
-                                    Client1.q1.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client1.increaseLikes();
-                                    Client1.replyCounter++;                                }
-                                /*while (!Client1.ready) {}
-
-                                // construct and send release packet
-                                try {
-                                    sendReleasePacket(Client3.clockTime, 1);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                            }
-
-                            // receive release packet
-                            if (packet.getType() == RELEASE) {
-                                Client1.q1.poll();
-                                Client1.increaseLikes();
-                                Client1.increaseClockTime(packet);
-                                if (!Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
-                                    Client1.q1.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client1.increaseLikes();
-                                }
-                            }
+                            client1Handler(packet, Client3.clockTime);
                         }
 
-                        /////////////////////////////////////////////////////////////////
-
                         if (clientId == 2)  {
-                            System.out.println("Client 2 received packet: " + packet.getMessage());
-                            // receive request packet
-                            if (packet.getType() == REQUEST) {
-                                Client2.q2.add(packet);
-
-                                // increase clock time
-                                Client2.increaseClockTime(packet);
-
-                                // construct and send reply packet
-                                try {
-                                    sendReplyPacket(Client3.clockTime, 2);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            // receive reply packet
-                            if (packet.getType() == REPLY) {
-                                Client2.increaseClockTime(packet);
-                                Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
-                                System.out.println("Client 2 has " + Client2.replyCounter + " reply");
-                                if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
-                                    System.out.println("2 received all replies");
-                                    Client2.q2.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client2.increaseLikes();
-                                    Client2.replyCounter++;                                }
-                                /*while (!Client2.ready) {}
-                                // construct and send release packet
-                                try {
-                                    sendReleasePacket(Client3.clockTime, 2);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }*/
-                            }
-
-                            // receive release packet
-                            if (packet.getType() == RELEASE) {
-                                Client2.q2.poll();
-                                Client2.increaseLikes();
-                                Client2.increaseClockTime(packet);
-                                if (!Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
-                                    Client2.q2.poll();
-                                    // enter critical section
-                                    sleep(5000);
-                                    Client2.increaseLikes();
-                                }
-                            }
+                            client2Handler(packet, Client3.clockTime);
                         }
                         break;
                     default:
@@ -448,11 +150,188 @@ public class Connection implements Runnable, Serializable{
         outStream.flush();
     }
 
-    public void sleep(int milisec) {
+    public synchronized void sleep(int milisec) {
         try {
             Thread.sleep(milisec);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public synchronized void client1Handler(Packet packet, int clockTime) {
+        System.out.println("Client 1 received packet: " + packet.getMessage());
+        // receive request packet
+        if (packet.getType() == REQUEST) {
+            Client1.q1.add(packet);
+
+            // increase clock time
+            Client1.increaseClockTime(packet);
+
+            while (Client1.critical) {}
+
+            // construct and send reply packet
+            try {
+                sendReplyPacket(clockTime, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // receive reply packet
+        if (packet.getType() == REPLY) {
+            Client1.increaseClockTime(packet);
+            Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
+            System.out.println("Client 1 has " + Client1.replyCounter + " reply");
+            if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                System.out.println("1 received all replies");
+                Client1.q1.poll();
+                // enter critical section
+                Client1.critical = true;
+                sleep(5000);
+                Client1.critical = false;
+                Client1.increaseLikes();
+                Client1.replyCounter++;
+            }
+            // when replyCounter is 3, client is ready to release
+            while (Client1.replyCounter != 3) {}
+            try {
+                sendReleasePacket(clockTime, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Client1.replyCounter = 0;
+        }
+
+        // receive release packet
+        if (packet.getType() == RELEASE) {
+            Client1.q1.poll();
+            Client1.increaseLikes();
+            Client1.increaseClockTime(packet);
+            if (!Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+                Client1.q1.poll();
+                // enter critical section
+                Client1.critical = true;
+                sleep(5000);
+                Client1.critical = false;
+                Client1.increaseLikes();
+            }
+        }
+    }
+
+    public synchronized void client2Handler(Packet packet, int clockTime) {
+        System.out.println("Client 2 received packet: " + packet.getMessage());
+        // receive request packet
+        if (packet.getType() == REQUEST) {
+            Client2.q2.add(packet);
+
+            // increase clock time
+            Client2.increaseClockTime(packet);
+            while (Client2.critical) {}
+            // construct and send reply packet
+            try {
+                sendReplyPacket(clockTime, 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // receive reply packet
+        if (packet.getType() == REPLY) {
+            Client2.increaseClockTime(packet);
+            Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
+            System.out.println("Client 2 has " + Client2.replyCounter + " reply");
+
+            if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                System.out.println("2 received all replies");
+                Client2.q2.poll();
+                // enter critical section
+                Client2.critical = true;
+                sleep(5000);
+                Client2.critical = false;
+                Client2.increaseLikes();
+                Client2.replyCounter++;
+            }
+            // when replyCounter is 3, client is ready to release
+            while (Client2.replyCounter != 3) {}
+            try {
+                sendReleasePacket(clockTime, 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Client2.replyCounter = 0;
+        }
+
+        // receive release packet
+        if (packet.getType() == RELEASE) {
+            Client2.q2.poll();
+            Client2.increaseLikes();
+            Client2.increaseClockTime(packet);
+            if (!Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+                Client2.q2.poll();
+                // enter critical section
+                Client2.critical = true;
+                sleep(5000);
+                Client2.critical = false;
+                Client2.increaseLikes();
+            }
+        }
+    }
+
+    public synchronized void client3Handler(Packet packet, int clockTime) {
+        System.out.println("Client 3 received packet: " + packet.getMessage());
+        // receive request packet
+        if (packet.getType() == REQUEST) {
+            Client3.q3.add(packet);
+
+            // increase clock time
+            Client3.increaseClockTime(packet);
+            while (Client3.critical) {}
+            // construct and send reply packet
+            try {
+                sendReplyPacket(clockTime, 3);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // receive reply packet
+        if (packet.getType() == REPLY) {
+            Client3.increaseClockTime(packet);
+            Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
+            System.out.println("Client 3 has " + Client3.replyCounter + " reply");
+            if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                System.out.println("3 received all replies");
+                Client3.q3.poll();
+                // enter critical section
+                Client3.critical = true;
+                sleep(5000);
+                Client3.critical = false;
+                Client3.increaseLikes();
+                Client3.replyCounter++;
+            }
+            // when replyCounter is 3, client is ready to release
+            while (Client3.replyCounter != 3) {}
+            try {
+                sendReleasePacket(clockTime, 3);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Client3.replyCounter = 0;
+        }
+
+        // receive release packet
+        if (packet.getType() == RELEASE) {
+            Client3.q3.poll();
+            Client3.increaseLikes();
+            Client3.increaseClockTime(packet);
+            if (!Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+                Client3.q3.poll();
+                // enter critical section
+                Client3.critical = true;
+                sleep(5000);
+                Client3.critical = false;
+                Client3.increaseLikes();
+            }
         }
     }
 }
