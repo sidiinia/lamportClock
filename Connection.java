@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 
 public class Connection implements Runnable, Serializable{
 
@@ -11,6 +12,7 @@ public class Connection implements Runnable, Serializable{
     private boolean running;
     private static int clientId;
     private volatile Socket returnSocket;
+    static Semaphore semaphore = new Semaphore(1);
     Packet packet = null;
 
     static int REQUEST = 1;
@@ -159,8 +161,8 @@ public class Connection implements Runnable, Serializable{
 
             // increase clock time
             Client1.increaseClockTime(packet);
-
-            while (Client1.critical) {}
+            System.out.println("before critical");
+            while (Client1.critical) {System.out.println("here");}
 
             // construct and send reply packet
             try {
@@ -174,10 +176,16 @@ public class Connection implements Runnable, Serializable{
 
         // receive reply packet
         if (packet.getType() == REPLY) {
-            Client1.increaseClockTime(packet);
-            Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
-            System.out.println("Client 1 has " + Client1.replyCounter + " reply");
-            if (Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+            try {
+                semaphore.acquire();
+                Client1.increaseClockTime(packet);
+                Client1.replyCounter = (Client1.replyCounter >= 2) ? 1 : Client1.replyCounter+1;
+                System.out.println("Client 1 has " + Client1.replyCounter + " reply");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            semaphore.release();
+            if (Client1.replyCounter == 2 && Client1.q1.peek().getProcessId() == 1) {
                 System.out.println("1 received all replies");
                 Client1.q1.poll();
                 // enter critical section
@@ -203,7 +211,7 @@ public class Connection implements Runnable, Serializable{
             Client1.q1.poll();
             Client1.increaseLikes();
             Client1.increaseClockTime(packet);
-            if (!Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1 && Client1.replyCounter == 2) {
+            if (Client1.replyCounter == 2 && !Client1.q1.isEmpty() && Client1.q1.peek().getProcessId() == 1) {
                 Client1.q1.poll();
                 // enter critical section
                 Client1.critical = true;
@@ -234,11 +242,16 @@ public class Connection implements Runnable, Serializable{
 
         // receive reply packet
         if (packet.getType() == REPLY) {
-            Client2.increaseClockTime(packet);
-            Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
-            System.out.println("Client 2 has " + Client2.replyCounter + " reply");
-
-            if (Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+            try {
+                semaphore.acquire();
+                Client2.increaseClockTime(packet);
+                Client2.replyCounter = (Client2.replyCounter >= 2) ? 1 : Client2.replyCounter+1;
+                System.out.println("Client 2 has " + Client2.replyCounter + " reply");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            semaphore.release();
+            if (Client2.replyCounter == 2 && Client2.q2.peek().getProcessId() == 2) {
                 System.out.println("2 received all replies");
                 Client2.q2.poll();
                 // enter critical section
@@ -264,7 +277,7 @@ public class Connection implements Runnable, Serializable{
             Client2.q2.poll();
             Client2.increaseLikes();
             Client2.increaseClockTime(packet);
-            if (!Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2 && Client2.replyCounter == 2) {
+            if (Client2.replyCounter == 2 && !Client2.q2.isEmpty() && Client2.q2.peek().getProcessId() == 2) {
                 Client2.q2.poll();
                 // enter critical section
                 Client2.critical = true;
@@ -296,10 +309,16 @@ public class Connection implements Runnable, Serializable{
 
         // receive reply packet
         if (packet.getType() == REPLY) {
-            Client3.increaseClockTime(packet);
-            Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
-            System.out.println("Client 3 has " + Client3.replyCounter + " reply");
-            if (Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+            try {
+                semaphore.acquire();
+                Client3.increaseClockTime(packet);
+                Client3.replyCounter = (Client3.replyCounter >= 2) ? 1 : Client3.replyCounter+1;
+                System.out.println("Client 3 has " + Client3.replyCounter + " reply");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            semaphore.release();
+            if (Client3.replyCounter == 2 && Client3.q3.peek().getProcessId() == 3) {
                 System.out.println("3 received all replies");
                 Client3.q3.poll();
                 // enter critical section
@@ -326,7 +345,7 @@ public class Connection implements Runnable, Serializable{
             Client3.q3.poll();
             Client3.increaseLikes();
             Client3.increaseClockTime(packet);
-            if (!Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3 && Client3.replyCounter == 2) {
+            if (Client3.replyCounter == 2 && !Client3.q3.isEmpty() && Client3.q3.peek().getProcessId() == 3) {
                 Client3.q3.poll();
                 // enter critical section
                 Client3.critical = true;
