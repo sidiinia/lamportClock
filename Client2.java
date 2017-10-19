@@ -30,8 +30,8 @@ public class Client2 {
 
     public static void main(String[] args) throws Exception {
 
-        Connection c1 = new Connection("127.0.0.1", 3000, procId, clockTime);
-        Connection c2 = new Connection("127.0.0.1", 4000, procId, clockTime);
+        Connection c1 = new Connection("127.0.0.1", 3000, procId);
+        Connection c2 = new Connection("127.0.0.1", 4000, procId);
         c1.start();
         c2.start();
 

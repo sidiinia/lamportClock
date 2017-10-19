@@ -6,9 +6,9 @@ public class Connection implements Runnable, Serializable{
 
     private String host;
     private int port;
-    private static int clientClock;
+    //private static int clientClock;
     private ObjectOutputStream outStream;
-    private ObjectInputStream inStream;
+    //private ObjectInputStream inStream;
     private boolean running;
     private static int clientId;
     private volatile Socket returnSocket;
@@ -19,11 +19,11 @@ public class Connection implements Runnable, Serializable{
     static int REPLY = 2;
     static int RELEASE = 3;
 
-    public Connection(String host, int port, int clientId, int clientClock) {
+    public Connection(String host, int port, int clientId) {
         this.host = host;
         this.port = port;
         this.clientId = clientId;
-        this.clientClock = clientClock;
+        //this.clientClock = clientClock;
     }
 
     public void start() {
@@ -132,14 +132,14 @@ public class Connection implements Runnable, Serializable{
     }
 
     public void sendReplyPacket(int clockTime, int procId) throws IOException {
-        System.out.println("Sending reply packet from client " + procId + "...");
+        System.out.println("Sent reply packet from client " + procId);
         Packet p = new Packet(REPLY, "Reply packet from client " + procId, procId, clockTime, 0); //todo
         outStream.writeObject(p);
         outStream.flush();
     }
 
     public void sendReleasePacket(int clockTime, int procId) throws IOException {
-        System.out.println("Sending release packet from client " + procId + "...");
+        System.out.println("Sent release packet from client " + procId);
         Packet p = new Packet(RELEASE, "Release packet from client " + procId, procId, clockTime, 0); //todo
         outStream.writeObject(p);
         outStream.flush();
